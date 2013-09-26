@@ -1,11 +1,7 @@
 package com.example.lab_9;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,40 +21,36 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    
+        
     public void button1_onClick(View view){
-    	new DownloadImageTask().execute("http://www.ecs.csun.edu/ecs/pics/spectra2011/wang_george.jpg");
-    }
+    	//Launch asynchronous download task, passing it the URL of the image to download.
+    	new DownloadImageAsyncTask().execute("http://www.ecs.csun.edu/ecs/pics/spectra2011/wang_george.jpg");
+    }    
     
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        /** The system calls this to perform work in a worker thread and
-          * delivers it the parameters given to AsyncTask.execute() */
-
+    private class DownloadImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
+    	//To be done by worker thread
         protected Bitmap doInBackground(String... urls) {
     		
         	try {
-				Bitmap b = BitmapFactory.decodeStream((InputStream)new URL(urls[0]).getContent());
-                return b;
+				Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(urls[0]).getContent());
+                return bitmap;
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				Log.e("lab-9", "Error Downloading File" + e.getMessage());
+				Log.e("lab-9", "Error Downloading File: " + e.getMessage());
 			}
 			return null;
         }
         
-        /** The system calls this to perform work in the UI thread and delivers
-          * the result from doInBackground() */
+        //Update UI
         protected void onPostExecute(Bitmap result) {
-            ImageView mImageView = (ImageView) findViewById(R.id.imageView1);
-            mImageView.setImageBitmap(result);
+            ImageView imageView1 = (ImageView) findViewById(R.id.imageView1);
+            imageView1.setImageBitmap(result);
         }
     }
 }
